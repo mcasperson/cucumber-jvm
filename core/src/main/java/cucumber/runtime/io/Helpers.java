@@ -27,13 +27,18 @@ public class Helpers {
             //throw new CucumberException("Expected a file URL:" + fileUrl.toExternalForm());
 
             /*
-                Instead we make a copy of the file and parse that instead.
+                Instead we find the local JAR file and look inside it
              */
             try {
-                final File copy = File.createTempFile("cucumber", ".jar");
-                FileUtils.copyURLToFile(fileUrl, copy);
-                fileUrl = copy.toURI().toURL();
-            } catch (IOException e) {
+				final File localJar = new File(
+					Helpers.class
+						.getProtectionDomain()
+						.getCodeSource()
+						.getLocation()
+						.toURI().getPath());
+
+                fileUrl = new File(System.getProperty("LocalIridiumJARFile")).toURL();
+            } catch (Exception e) {
                 throw new CucumberException(e);
             }
         }
